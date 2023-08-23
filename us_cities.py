@@ -78,24 +78,48 @@ def guess_city_map(answer, guess):
     min_lat_f = max(min_lat_ex, -90)
     max_lat_f = min(max_lat_ex, 90)
 
-    
+    if guess == answer:
+        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
 
-    world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+        fig, ax = plt.subplots(figsize=(12, 8))
+        world.boundary.plot(ax=ax, linewidth=1)
+        results_gdf.plot(ax=ax, color='blue', markersize=20, label='City Guess')
+        ax.set_xlim(min_lon_f, max_lon_f)
+        ax.set_ylim(min_lat_f, max_lat_f)
 
-    fig, ax = plt.subplots(figsize=(12, 8))
-    world.boundary.plot(ax=ax, linewidth=1)
-    results_gdf.plot(ax=ax, color='red', markersize=20, label='City Guess')
-    ax.set_xlim(min_lon_f, max_lon_f)
-    ax.set_ylim(min_lat_f, max_lat_f)
+        # Set title
+        plt.title('City Guess')
 
-    # Set title
-    plt.title('City Guess')
+        # Show the map
+        plt.show()
+        st.write(guess + ' is correct!')
+        st.pyplot(fig)
 
-    # Show the map
-    plt.show()
-    st.write(answer + ' is ' + str(distance) + ' miles away from ' + guess)
-    st.pyplot(fig)
+    else:
+
+        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+
+        fig, ax = plt.subplots(figsize=(12, 8))
+        world.boundary.plot(ax=ax, linewidth=1)
+
+        index_to_remove = results_gdf[results_gdf['city'] == answer].index[0]
+        results_gdf.drop(index_to_remove, inplace=True)
+        results_gdf.plot(ax=ax, color='red', markersize=20, label='City Guess')
+        ax.set_xlim(min_lon_f, max_lon_f)
+        ax.set_ylim(min_lat_f, max_lat_f)
+
+        # Set title
+        plt.title('City Guess')
+
+        # Show the map
+        plt.show()
+        st.write(guess + ' is ' + str(distance) + ' miles away from the correct city')
+        st.pyplot(fig)
+
+
 user_guess = st.selectbox('guess a city' ,top_200_cities['city'])
 first_test = 'Miami'
 
-guess_city_map(user_guess,first_test)
+
+guess_city_map(first_test,user_guess)
+
