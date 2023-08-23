@@ -93,7 +93,7 @@ def guess_city_map(answer, guess):
 
     # Show the map
     plt.show()
-    st.write(guess + ' is ' + str(distance) + ' miles away from ' + answer)
+    st.write(answer + ' is ' + str(distance) + ' miles away from ' + guess)
 
 user_guess = st.selectbox('guess a city' ,top_200_cities['city'])
 first_test = 'Miami'
