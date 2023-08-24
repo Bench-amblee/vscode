@@ -117,5 +117,39 @@ def guess_city_map(answer, guess):
         st.pyplot(fig)
 
 
+correct_city = 'Boston'
+
+user_guesses = []
+
+# Title
+st.title("Guess the US City Game")
+testing = '''
+# Display instructions
+st.write("Can you guess the correct US city? You have 5 chances.")
+
+# Initialize a list to store user guesses for each attempt
+user_guesses_list = [[] for _ in range(5)]
+
+# Allow the user five guesses
+with st.form("guess_form"):
+    for attempt in range(5):
+        st.write(f"Attempts Left: {5 - attempt}")
+        user_guess = st.text_input("Guess a US city:")
+
+        if st.form_submit_button(label="Submit Guess"):
+            if user_guess.lower() == correct_city.lower():
+                st.write("Congratulations! Your guess is correct.")
+                break
+            elif user_guess.lower() in [city.lower() for city in top_200_cities['city']]:
+                user_guesses_list[attempt].append(user_guess)
+                remaining_guesses = 5 - attempt
+                if remaining_guesses > 0:
+                    st.write(f"Your guess is not correct. You have {remaining_guesses} guess(es) remaining.")
+                else:
+                    st.write("Sorry, you've used all your guesses. The correct city was:", correct_city)
+                    break
+            else:
+                st.write("Please enter a valid US city from the list of 200 most populated cities.")
+'''
 user_guess = st.selectbox('guess a city' ,top_200_cities['city'])
 guess_city_map('Dallas',user_guess)
