@@ -118,8 +118,4 @@ def guess_city_map(answer, guess):
 
 
 user_guess = st.selectbox('guess a city' ,top_200_cities['city'])
-first_test = 'Miami'
-
-
-guess_city_map(first_test,user_guess)
-
+guess_city_map('Dallas',user_guess)
