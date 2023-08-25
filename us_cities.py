@@ -151,5 +151,7 @@ with st.form("guess_form"):
             else:
                 st.write("Please enter a valid US city from the list of 200 most populated cities.")
 '''
+
+
 user_guess = st.selectbox('guess a city' ,top_200_cities['city'])
-guess_city_map('Dallas',user_guess)
+guess_city_map('Los Angeles',user_guess)
