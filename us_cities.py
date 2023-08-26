@@ -123,8 +123,12 @@ def guess_city_map(answer, guess):
         st.write(guess + ' is ' + str(distance) + ' miles away from the correct city')
         st.pyplot(fig)
 
+x = random.randint(0,100)
 
-correct_city = random.choice(top_100_cities['city'])
+# random number keeps changing - fix later 
+
+
+correct_city = top_100_cities['city'][50]
 user_guess = 'Austin'
 
 # Title
