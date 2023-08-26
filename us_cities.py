@@ -152,7 +152,7 @@ try:
             guess_city_map(correct_city,user_guess)
             i += 1
 
-            if user_guess = correct_city:
+            if user_guess == correct_city:
                 break
 
         else:
