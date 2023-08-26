@@ -23,3 +23,7 @@ plt.xlabel('Items')
 plt.ylabel('Counts')
 plt.title('Stop Sign Direction Count')
 plt.show()
+
+results_dfT = results_df.T
+
+print(results_dfT)
