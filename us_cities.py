@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import geopandas as gpd
 import streamlit as st
+import random
 import math
 
 file_path = 'data/uscities.csv'
@@ -123,7 +124,7 @@ def guess_city_map(answer, guess):
         st.pyplot(fig)
 
 
-correct_city = 'Boston'
+correct_city = random.choice(top_200_cities['city'])
 user_guess = 'Austin'
 
 # Title
@@ -156,7 +157,7 @@ try:
                 break
 
         else:
-            st.write("too many guesses, refresh and try again!")
+            st.write("Too many guesses, the correct answer was " + correct_city + " - refresh and try again!")
             break
 except TypeError:
     st.warning(
