@@ -8,7 +8,7 @@ import math
 file_path = 'data/uscities.csv'
 df = pd.read_csv(file_path)
 df_sorted = df.sort_values(by='population', ascending=False)
-top_200_cities = df_sorted.head(200)
+top_100_cities = df_sorted.head(100)
 
 # distance calculator
 
@@ -37,18 +37,18 @@ def haversine_distance(lat1, lon1, lat2, lon2):
     return distance
 
 def guess_city_map(answer, guess):
-    answer_rows = top_200_cities[top_200_cities['city']==answer]
-    guess_rows = top_200_cities[top_200_cities['city']==guess]
+    answer_rows = top_100_cities[top_100_cities['city']==answer]
+    guess_rows = top_100_cities[top_100_cities['city']==guess]
 
     if answer_rows.empty or guess_rows.empty:
         st.write('')
         return None
 
 
-    answer_lat = top_200_cities[top_200_cities['city']==answer]['lat'].iloc[0]
-    answer_lon = top_200_cities[top_200_cities['city']==answer]['lng'].iloc[0]
-    guess_lat = top_200_cities[top_200_cities['city']==guess]['lat'].iloc[0]
-    guess_lon = top_200_cities[top_200_cities['city']==guess]['lng'].iloc[0]
+    answer_lat = top_100_cities[top_100_cities['city']==answer]['lat'].iloc[0]
+    answer_lon = top_100_cities[top_100_cities['city']==answer]['lng'].iloc[0]
+    guess_lat = top_100_cities[top_100_cities['city']==guess]['lat'].iloc[0]
+    guess_lon = top_100_cities[top_100_cities['city']==guess]['lng'].iloc[0]
 
     distance = distance = haversine_distance(answer_lat, answer_lon, guess_lat, guess_lon)
 
@@ -124,12 +124,12 @@ def guess_city_map(answer, guess):
         st.pyplot(fig)
 
 
-correct_city = random.choice(top_200_cities['city'])
+correct_city = random.choice(top_100_cities['city'])
 user_guess = 'Austin'
 
 # Title
 st.title("Guess the US City Game")
-st.write('You have five attempts to guess the random US city. You can only guess cities from the top 200 us cities by population. Good Luck!')
+st.write('You have five attempts to guess the random US city. You can only guess cities from the top 100 us cities by population. Good Luck!')
 
 
 i = 1
@@ -144,9 +144,9 @@ try:
             key=i)
         
             # Result validation
-            if user_guess.lower() not in [city.lower() for city in top_200_cities['city']]:
+            if user_guess.lower() not in [city.lower() for city in top_100_cities['city']]:
                 st.warning(
-                    f"Please only choose from the top 200 US cities by population"
+                    f"Please only choose from the top 100 US cities by population"
                 )
 
             #if st.button('Submit Guess',key=i+10):
