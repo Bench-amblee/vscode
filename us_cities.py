@@ -137,14 +137,22 @@ st.write('You have five attempts to guess the random US city. You can only guess
 
 
 i = 1
+key_counter = 0
+def get_unique_key():
+    global key_counter
+    key_counter += 1
+    return key_counter
 
+game_over = False
 try:
+    #while game_over == False:
     while user_guess:
 
         if i < 6:
-            user_guess = st.text_input(
-            'Guess a City in the US',
-            key=i)
+            widget_key = get_unique_key()
+            user_guess = st.selectbox(
+            'Guess a City in the US',top_100_cities['city'],
+            key=widget_key)
 
             # Result validation
             if user_guess.lower() not in [city.lower() for city in top_100_cities['city']]:
@@ -152,14 +160,19 @@ try:
                     f"Please only choose from the top 100 US cities by population"
                 )
 
-            #if st.button('Submit Guess',key=i+10):
-            guess_city_map(correct_city,user_guess)
-            i += 1
+            widget_key = get_unique_key()
+            if st.button('Submit Guess',
+                         key = widget_key):
+                guess_city_map(correct_city,user_guess)
+                i += 1
 
             if user_guess == correct_city:
+                game_over = True
                 break
 
         else:
+            game_over = True
+
             st.write("Too many guesses, the correct answer was " + correct_city + " - refresh and try again!")
             break
 except TypeError:
