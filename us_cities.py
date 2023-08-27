@@ -128,7 +128,7 @@ x = random.randint(0,100)
 # random number keeps changing - fix later 
 
 
-correct_city = top_100_cities['city'][50]
+correct_city = top_100_cities['city'][53]
 user_guess = 'Austin'
 
 # Title
@@ -142,11 +142,10 @@ try:
     while user_guess:
 
         if i < 6:
-
             user_guess = st.text_input(
             'Guess a City in the US',
             key=i)
-        
+
             # Result validation
             if user_guess.lower() not in [city.lower() for city in top_100_cities['city']]:
                 st.warning(
