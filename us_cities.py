@@ -143,38 +143,66 @@ def get_unique_key():
     key_counter += 1
     return key_counter
 
-game_over = False
+game = True
+user_guesses = []
 try:
     #while game_over == False:
-    while user_guess:
+    #for i in range(1,6):
+    while game:
+    
+        widget_key_1 = get_unique_key()
+        widget_key_2 = get_unique_key()
 
-        if i < 6:
-            widget_key = get_unique_key()
+        user_guess = st.selectbox(
+            'Guess a City in the US',top_100_cities['city'],
+        key=widget_key_1)
+        user_guess_submit = st.button('Submit Guess',
+                                          key = widget_key_2)
+
+        if user_guess_submit:
+            guess_city_map(correct_city,user_guess)
+            user_guesses.append(user_guess)
+            continue
+
+            if len(user_guesses) > 5:
+                st.write("no more guesses")
+                st.write(user_guesses)
+                break
+            game = True
+
+        
+       
+    xyz = '''
+        if i <= 6:
+            widget_key_1 = get_unique_key()
+            widget_key_2 = get_unique_key()
             user_guess = st.selectbox(
             'Guess a City in the US',top_100_cities['city'],
-            key=widget_key)
+            key=widget_key_1)
+            user_guess_submit = st.button('Submit Guess',
+                                          key = widget_key_2)
+            
 
-            # Result validation
-            if user_guess.lower() not in [city.lower() for city in top_100_cities['city']]:
-                st.warning(
-                    f"Please only choose from the top 100 US cities by population"
-                )
-
-            widget_key = get_unique_key()
-            if st.button('Submit Guess',
-                         key = widget_key):
+            if user_guess and user_guess_submit:
                 guess_city_map(correct_city,user_guess)
-                i += 1
+                if user_guess == correct_city:
+                    game = False
+                    i=0
+                    break
 
-            if user_guess == correct_city:
-                game_over = True
-                break
+                #widget_key = get_unique_key()
+                #if st.button('Submit Guess',
+                         #key = widget_key):
+                    #guess_city_map(correct_city,user_guess)
+                    #i += 1
 
-        else:
-            game_over = True
+           '''    
 
-            st.write("Too many guesses, the correct answer was " + correct_city + " - refresh and try again!")
-            break
+        #else:
+           # game = False
+
+           # st.write("Too many guesses, the correct answer was " + correct_city + " - refresh and try again!")
+            #break
 except TypeError:
     st.warning(
         "Waiting for input. Please refresh the page if you feel something is wrong."
