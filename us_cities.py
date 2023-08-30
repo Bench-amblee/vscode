@@ -148,7 +148,7 @@ user_guesses = []
 try:
     #while game_over == False:
     #for i in range(1,6):
-    while game:
+    while len(user_guesses) <= 5:
     
         widget_key_1 = get_unique_key()
         widget_key_2 = get_unique_key()
