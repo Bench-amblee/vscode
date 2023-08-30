@@ -146,8 +146,6 @@ def get_unique_key():
 game = True
 user_guesses = []
 try:
-    #while game_over == False:
-    #for i in range(1,6):
     while len(user_guesses) <= 5:
     
         widget_key_1 = get_unique_key()
@@ -196,13 +194,7 @@ try:
                     #guess_city_map(correct_city,user_guess)
                     #i += 1
 
-           '''    
-
-        #else:
-           # game = False
-
-           # st.write("Too many guesses, the correct answer was " + correct_city + " - refresh and try again!")
-            #break
+           '''
 except TypeError:
     st.warning(
         "Waiting for input. Please refresh the page if you feel something is wrong."
