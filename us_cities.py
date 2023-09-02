@@ -36,6 +36,15 @@ def haversine_distance(lat1, lon1, lat2, lon2):
 
     return distance
 
+def miles_to_degrees(miles):
+    # Earth radius in miles (approximately 3958.8 miles)
+    earth_radius_miles = 3958.8
+
+    # Convert miles to degrees
+    degrees = miles / earth_radius_miles
+
+    return degrees
+
 def guess_city_map(answer, guess):
     answer_rows = top_100_cities[top_100_cities['city']==answer]
     guess_rows = top_100_cities[top_100_cities['city']==guess]
@@ -61,6 +70,7 @@ def guess_city_map(answer, guess):
     results_gdf = gpd.GeoDataFrame(results_df, geometry=gpd.points_from_xy(results_df.lon, results_df.lat))
 
     
+    bbox = [-170, 10, -60, 80]  # (min_lon, min_lat, max_lon, max_lat)
     # Set max x and y for map output
     min_lon = min(results_gdf['geometry'].bounds['minx'])
     max_lon = max(results_gdf['geometry'].bounds['maxx'])
@@ -85,14 +95,18 @@ def guess_city_map(answer, guess):
     min_lat_f = max(min_lat_ex, -90)
     max_lat_f = min(max_lat_ex, 90)
 
+    
+
     if guess == answer:
         world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
 
         fig, ax = plt.subplots(figsize=(12, 8))
         world.boundary.plot(ax=ax, linewidth=1)
         results_gdf.plot(ax=ax, color='blue', markersize=20, label='City Guess')
-        ax.set_xlim(min_lon_f, max_lon_f)
-        ax.set_ylim(min_lat_f, max_lat_f)
+        #ax.set_xlim(min_lon_f, max_lon_f)
+        #ax.set_ylim(min_lat_f, max_lat_f)
+        ax.set_xlim(bbox[0], bbox[2])
+        ax.set_ylim(bbox[1], bbox[3])
 
         # Set title
         plt.title('City Guess')
@@ -112,8 +126,16 @@ def guess_city_map(answer, guess):
         index_to_remove = results_gdf[results_gdf['city'] == answer].index[0]
         results_gdf.drop(index_to_remove, inplace=True)
         results_gdf.plot(ax=ax, color='red', markersize=20, label='City Guess')
-        ax.set_xlim(min_lon_f, max_lon_f)
-        ax.set_ylim(min_lat_f, max_lat_f)
+
+        radius_in_degrees = miles_to_degrees(distance)
+        results_gdf.plot(ax=ax, color='blue', markersize=radius_in_degrees, alpha=0.5)
+
+        circle = plt.Circle((results_gdf.lon, results_gdf.lat), distance, fill=False, color='blue', alpha=0.5)
+        plt.gca().add_patch(circle)
+        #ax.set_xlim(min_lon_f, max_lon_f)
+        #ax.set_ylim(min_lat_f, max_lat_f)
+        ax.set_xlim(bbox[0], bbox[2])
+        ax.set_ylim(bbox[1], bbox[3])
 
         # Set title
         plt.title('City Guess')
@@ -146,7 +168,7 @@ def get_unique_key():
 game = True
 user_guesses = []
 try:
-    while len(user_guesses) <= 5:
+    for tries in range(1,6):
     
         widget_key_1 = get_unique_key()
         widget_key_2 = get_unique_key()
