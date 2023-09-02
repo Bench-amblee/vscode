@@ -41,7 +41,7 @@ def miles_to_degrees(miles):
     earth_radius_miles = 3958.8
 
     # Convert miles to degrees
-    degrees = miles / earth_radius_miles
+    degrees = (miles * earth_radius_miles)/80
 
     return degrees
 
@@ -95,8 +95,6 @@ def guess_city_map(answer, guess):
     min_lat_f = max(min_lat_ex, -90)
     max_lat_f = min(max_lat_ex, 90)
 
-    
-
     if guess == answer:
         world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
 
@@ -128,10 +126,10 @@ def guess_city_map(answer, guess):
         results_gdf.plot(ax=ax, color='red', markersize=20, label='City Guess')
 
         radius_in_degrees = miles_to_degrees(distance)
-        results_gdf.plot(ax=ax, color='blue', markersize=radius_in_degrees, alpha=0.5)
+        results_gdf.plot(ax=ax, color='blue', markersize=radius_in_degrees,alpha=0.2)
 
-        circle = plt.Circle((results_gdf.lon, results_gdf.lat), distance, fill=False, color='blue', alpha=0.5)
-        plt.gca().add_patch(circle)
+        #circle = plt.Circle((results_gdf.lon, results_gdf.lat), distance, fill=False, color='blue', alpha=0.5)
+        #plt.gca().add_patch(circle)
         #ax.set_xlim(min_lon_f, max_lon_f)
         #ax.set_ylim(min_lat_f, max_lat_f)
         ax.set_xlim(bbox[0], bbox[2])
@@ -150,12 +148,54 @@ x = random.randint(0,100)
 # random number keeps changing - fix later 
 
 
+def plot_city_guess(answer,guess):
+    answer_rows = top_100_cities[top_100_cities['city']==answer]
+    guess_rows = top_100_cities[top_100_cities['city']==guess]
+
+    if answer_rows.empty or guess_rows.empty:
+        st.write('')
+        return None
+    
+    answer_lat = top_100_cities[top_100_cities['city']==answer]['lat'].iloc[0]
+    answer_lon = top_100_cities[top_100_cities['city']==answer]['lng'].iloc[0]
+    guess_lat = top_100_cities[top_100_cities['city']==guess]['lat'].iloc[0]
+    guess_lon = top_100_cities[top_100_cities['city']==guess]['lng'].iloc[0]
+
+    distance = distance = haversine_distance(answer_lat, answer_lon, guess_lat, guess_lon)
+
+    cities_data = [
+        {'city':answer,'lat':answer_lat,'lon':answer_lon},
+        {'city':guess,'lat':guess_lat,'lon':guess_lon}
+    ]
+
+    results_df = pd.DataFrame(cities_data)
+    results_gdf = gpd.GeoDataFrame(results_df, geometry=gpd.points_from_xy(results_df.lon, results_df.lat))
+
+    if guess == answer:
+        results_gdf.plot(ax=ax, color='blue', markersize=20, label='City Guess')
+
+    else:
+        index_to_remove = results_gdf[results_gdf['city'] == answer].index[0]
+        results_gdf.drop(index_to_remove, inplace=True)
+        results_gdf.plot(ax=ax, color='red', markersize=20, label='City Guess')
+        radius_in_degrees = miles_to_degrees(distance)
+        results_gdf.plot(ax=ax, color='blue', markersize=radius_in_degrees,alpha=0.2)
+
 correct_city = top_100_cities['city'][53]
 user_guess = 'Austin'
 
 # Title
 st.title("Guess the US City Game")
 st.write('You have five attempts to guess the random US city. You can only guess cities from the top 100 us cities by population. Good Luck!')
+world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+
+fig, ax = plt.subplots(figsize=(12, 8))
+world.boundary.plot(ax=ax, linewidth=1)
+bbox = [-170, 10, -60, 80]  # (min_lon, min_lat, max_lon, max_lat)
+ax.set_xlim(bbox[0], bbox[2])
+ax.set_ylim(bbox[1], bbox[3])
+
+
 
 
 i = 1
@@ -167,9 +207,28 @@ def get_unique_key():
 
 game = True
 user_guesses = []
+click_count = 0
+
+user_guess = st.selectbox(
+            'Guess a City in the US',top_100_cities['city'])
+user_guess_submit = st.button('Submit Guess')
+
+
+while click_count < 6:
+
+    if user_guess_submit:
+        user_guesses.append(user_guess)
+        click_count +=1
+
+    for city in user_guesses:
+        plot_city_guess(correct_city,city)
+
+    st.pyplot(fig)
+    st.write(user_guesses)
+
 try:
-    for tries in range(1,6):
-    
+    while click_count: 
+
         widget_key_1 = get_unique_key()
         widget_key_2 = get_unique_key()
 
@@ -182,7 +241,11 @@ try:
         if user_guess_submit:
             guess_city_map(correct_city,user_guess)
             user_guesses.append(user_guess)
+            click_count +=1
             continue
+
+        if click_count > 5:
+            break
 
             if len(user_guesses) > 5:
                 st.write("no more guesses")
