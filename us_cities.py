@@ -4,6 +4,7 @@ import geopandas as gpd
 import streamlit as st
 import random
 import math
+import numpy as np
 
 file_path = 'data/uscities.csv'
 df = pd.read_csv(file_path)
@@ -209,12 +210,52 @@ game = True
 user_guesses = []
 click_count = 0
 
-user_guess = st.selectbox(
+xxxxxxxxx = '''user_guess = st.selectbox(
             'Guess a City in the US',top_100_cities['city'])
 user_guess_submit = st.button('Submit Guess')
+'''
+# Define a Streamlit nction with caching
+@st.cache_data
+def add_point(point):
+    data_points.append(point)
+    return data_points
+# Initialize a list to store data points
+data_points = []
+
+#session state:
+#https://github.com/streamlit/release-demos/blob/0.84/0.84/demos/todo_list.py
 
 
-while click_count < 6:
+# Streamlit runs from top to bottom on every iteraction so
+# we check if `count` has already been initialized in st.session_state.
+
+# If no, then initialize count to 0
+# If count is already initialized, don't do anything
+if 'count' not in st.session_state:
+	st.session_state.count = 0
+
+# Create a button which will increment the counter
+increment = st.button('Increment')
+if increment:
+    st.session_state.count += 1
+    new_point = np.random.rand()
+    updated_data = add_point(new_point)
+
+st.write('Count = ', st.session_state.count)
+st.write(data_points)
+
+
+
+
+# Create a Matplotlib figure
+fig, ax = plt.subplots()
+line, = ax.plot([], [])  # Create an empty line
+
+ax.set_xlabel('X-axis')
+ax.set_ylabel('Y-axis')
+ax.set_title('Matplotlib Plot with Streamlit')
+
+xyxz = '''while click_count < 6:
 
     if user_guess_submit:
         user_guesses.append(user_guess)
@@ -253,9 +294,9 @@ try:
                 break
             game = True
 
-        
+     '''   
        
-    xyz = '''
+xyz = '''
         if i <= 6:
             widget_key_1 = get_unique_key()
             widget_key_2 = get_unique_key()
@@ -280,6 +321,7 @@ try:
                     #i += 1
 
            '''
+xxxxxx = '''
 except TypeError:
     st.warning(
         "Waiting for input. Please refresh the page if you feel something is wrong."
@@ -287,3 +329,4 @@ except TypeError:
 
 except SystemExit:
     pass
+'''
