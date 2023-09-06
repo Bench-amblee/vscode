@@ -244,6 +244,27 @@ if increment:
 st.write('Count = ', st.session_state.count)
 st.write(data_points)
 
+def front():
+
+    if "city" not in st.session_state:
+        st.session_state.map = [
+           {"description": "Cities Guessing Game", "done": True}
+        ]
+
+    def add_user_guess():
+        if st.session_state.new_guess:
+
+            st.session_state.map.append(
+            {
+                    "description:": st.session_state.new_guess,
+                    "done": False
+            }
+        )
+    st.text_input("Guess a City", onchange=add_user_guess, key="new_guess")
+
+    st.write(st.session_state.map)
+
+
 
 
 
