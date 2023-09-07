@@ -260,10 +260,13 @@ def front():
                     "done": False
             }
         )
-    st.text_input("Guess a City", onchange=add_user_guess, key="new_guess")
+    st.text_input("Guess a City", on_change=add_user_guess, key="new_guess")
 
     st.write(st.session_state.map)
 
+
+if __name__ == "__main__":
+    front()
 
 
 
