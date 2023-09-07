@@ -268,7 +268,7 @@ def front():
 if __name__ == "__main__":
     front()
 
-
+# define list adding structure
 
 
 # Create a Matplotlib figure
