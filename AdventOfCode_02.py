@@ -38,39 +38,67 @@ G5 = 'Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green'
 def data_clean(text):
     data_dict = {}
     results_dict = {}
+    round_list = []
 
     # seperate Game header from item data
     clean1 = text.strip().split(":")
 
     # seperate games into list of games
-    clean2 = clean1[0].strip().split(";")
+    clean2 = clean1[1].strip().split("; ")
 
     # turn item list data into dictionary to match bag format
-    for games in clean2:
-        for items in games:
-            items_clean = items.split(', ')
+    for i in range(len(clean2)):
+        round = clean2[i].split(', ')
 
-            for counts in items_clean:
+        for colors in round:
+            quantity, color = colors.split(' ')
+            quantity = int(quantity)  
+            results_dict[color] = quantity
+
+        round_list.append(results_dict)
+        
+    data_dict[clean1[0]] = round_list
+    return data_dict
+
+def valid_bag_game(game):
+    game_clean = data_clean(game)
+    game_name = list(game_clean.keys())[0]
+    round_count = len(list(game_clean.values())[0])
+
+    red_count = 0
+    green_count = 0
+    blue_count = 0
+
+    for i in range(round_count):
+
+        red_round = game_clean[game_name][i-1]['red']
+        if red_round > red_count:
+            red_count = red_round
+
+        green_round = game_clean[game_name][i-1]['green']
+        if green_round > green_count:
+            green_count = green_round
+
+        blue_round = game_clean[game_name][i-1]['blue']
+        if blue_round > blue_count:
+            blue_count = blue_round
+
+    if red_count > bag['Red']:
+        text = 'Not a valid game'
+
+    elif green_count > bag['Green']:
+        text = 'Not a valid game'
+
+    elif blue_count > bag['Blue']:
+        text = 'Not a valid game'
+
+    elif (red_count+green_count+blue_count) > (bag['Red']+bag['Green']+bag['Blue']):
+        text = 'Not a valid game'
+
+    else:
+        text = game_name + ' is a valid game!'
 
 
-                quantity, color = counts.split(' ')
-                quantity = int(quantity)
-                results_dict[color] = quantity
-
-        data_dict[clean1[0]] = results_dict
-
-    return results_dict
-
-print(data_clean(G1))
-
-'''
-test = '6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green'
-testc = test.strip().split("; ")
-testcd = testc[0].split(', ')
-
-print(testcd)
-
-'''
-
-
-
+    return red_count
+    
+print(valid_bag_game(G3))
