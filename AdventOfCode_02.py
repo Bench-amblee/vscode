@@ -30,7 +30,7 @@ bag = {'Red': 12, 'Green': 13, "Blue": 14}
 
 G1 = 'Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green'
 G2 = 'Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue'
-G3 = 'Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red'
+G3 = 'Game 3: 8 green, 6 blue, 20 red; 5 blue, 13 green; 5 green'
 G4 = 'Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red'
 G5 = 'Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green'
 
@@ -65,6 +65,10 @@ def valid_bag_game(game):
     game_name = list(game_clean.keys())[0]
     round_count = len(list(game_clean.values())[0])
 
+    global red_count
+    global green_count
+    global blue_count
+
     red_count = 0
     green_count = 0
     blue_count = 0
@@ -84,21 +88,24 @@ def valid_bag_game(game):
             blue_count = blue_round
 
     if red_count > bag['Red']:
-        text = 'Not a valid game'
+        text = game_name + ' is NOT a valid game'
 
     elif green_count > bag['Green']:
-        text = 'Not a valid game'
+        text = game_name + ' is NOT a valid game'
 
     elif blue_count > bag['Blue']:
-        text = 'Not a valid game'
+        text = game_name + ' is NOT a valid game'
 
     elif (red_count+green_count+blue_count) > (bag['Red']+bag['Green']+bag['Blue']):
-        text = 'Not a valid game'
+        text = game_name + ' is NOT a valid game'
 
     else:
         text = game_name + ' is a valid game!'
 
 
-    return red_count
-    
-print(valid_bag_game(G3))
+    return text
+
+list_of_games = [G1,G2,G3,G4,G5]
+
+for game in list_of_games:
+    print(valid_bag_game(game))
